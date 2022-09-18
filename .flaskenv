@@ -1,0 +1,3 @@
+FLASK_APP=task1
+FLASK_ENV=development
+FLASK_DEBUG=1
