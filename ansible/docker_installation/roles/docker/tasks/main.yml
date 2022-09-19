@@ -1,0 +1,34 @@
+---
+- name: Upgrade system
+  apt:
+    update_cache: yes
+    upgrade: yes
+    
+- name: Check docker installation
+  register: result
+  ignore_errors: yes
+  shell: which docker
+                                                                                               
+- name: Install docker requirements
+  when: result.rc != 0
+  apt:
+    name: "{{ docker_requirements }}"
+    state: present
+                                                                                               
+- name: Add Docker GPG apt Key
+  when: result.rc != 0
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+                                                                                               
+- name: Add Docker Repository
+  when: result.rc != 0
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu {{ ansible_facts.lsb.codename }} stable
+    state: present
+                                                                                               
+- name: Install Docker packages
+  when: result.rc != 0
+  apt:
+    name: "{{ docker_packages }}"
+    state: present
